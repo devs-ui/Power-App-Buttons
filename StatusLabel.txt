@@ -1,0 +1,5 @@
+If(
+    IsBlank(currentUser),
+    "",
+    "Current status: " & currentUser.'Status - A'
+)

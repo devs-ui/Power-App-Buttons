@@ -1,0 +1,7 @@
+Set(
+    currentUser,
+    LookUp(
+        EmployeeTbl,
+        Lower(NormalizedEmail) = Lower(User().Email)
+    )
+);
