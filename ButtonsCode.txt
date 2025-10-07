@@ -1,5 +1,7 @@
 If(
     !IsBlank(LookUp(EmployeeTbl, NormalizedEmail = currentUser.NormalizedEmail)),
+
+    /* Update EmployeeTbl */
     Patch(
         EmployeeTbl,
         LookUp(EmployeeTbl, NormalizedEmail = currentUser.NormalizedEmail),
@@ -8,21 +10,26 @@ If(
             ClockInTime: DateAdd(Now(), -7, TimeUnit.Hours)
         }
     );
+
+    /* Write to Employee_Log */
     Collect(
         Employee_Log,
         {
             Name: currentUser.Name,
             Action: "Clock In",
-            Timestamp: DateAdd(Now(), -7, TimeUnit.Hours),
-            Month: Date(
-                Year(DateAdd(Now(), -7, TimeUnit.Hours)),
-                Month(DateAdd(Now(), -7, TimeUnit.Hours)),
-                1
-            )
+            Timestamp: DateAdd(Now(), -7, TimeUnit.Hours)
         }
     );
+
+    /* Refresh */
     Refresh(EmployeeTbl);
     Refresh(Employee_Log);
+
+    /* Update label */
+    UpdateContext({ statusLbl: "Clock In" });
+
+    /* Notify */
     Notify("✅ Clock In successful!", NotificationType.Success),
+
     Notify("⚠️ User not found in EmployeeTbl", NotificationType.Error)
-);
+)
